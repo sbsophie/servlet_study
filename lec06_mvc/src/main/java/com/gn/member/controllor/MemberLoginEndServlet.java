@@ -2,12 +2,13 @@ package com.gn.member.controllor;
 
 import java.io.IOException;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebFilter;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.gn.member.service.MemberService;
 import com.gn.member.vo.Member;
@@ -30,7 +31,19 @@ public class MemberLoginEndServlet extends HttpServlet {
 		
 		// 3. 전달받은 아이디와 비밀번호가 일치하는 회원 정보(번호,아이디,비밀번호,이름) 조회
 		Member m = new MemberService().loginMember(id,pw);
-		System.out.println(m);
+		if(m != null) {
+			HttpSession session = request.getSession();
+			if(session.isNew() || session.getAttribute("member") == null) {
+				session.setAttribute("member",m);
+				session.setMaxInactiveInterval(60*30);
+			}
+			response.sendRedirect("/");  //메인화면으로 전화해주는 코드
+		}else {
+			RequestDispatcher view
+				= request.getRequestDispatcher("/views/member/login_fail.jsp");
+			view.forward(request, response);
+		}
+		
 		
 		response.setContentType("application/json; charset=utf-8");
 	}

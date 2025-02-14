@@ -13,7 +13,7 @@ import javax.servlet.http.HttpFilter;
 import javax.servlet.http.HttpServletRequest;
 
 @SuppressWarnings("serial")
-@WebFilter(servletNames= {"memberCreateEndServlet","memberLoginEndServlet"})
+@WebFilter(servletNames= {"memberCreateEndServlet","memberLoginEndServlet","memberUpdateEndServlet"})
 public class EncryptFilter extends HttpFilter implements Filter {
 
     public EncryptFilter() {

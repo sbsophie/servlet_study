@@ -33,4 +33,20 @@ public class MemberService {
 		return m;
 	}
 	
+	// 계정수정 코드
+	public int updateMember(Member m) {
+		Connection conn = getConnection();
+		int result = memberDao.updateMember(m, conn);
+		close(conn);
+		return result;
+	}
+	
+	// 계정 재설정 코드
+	public Member selectMember(Member m) {
+		Connection conn = getConnection();
+		Member member = memberDao.selectMember(m ,conn);
+		close(conn);
+		return member;
+	}
+	
 }
