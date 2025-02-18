@@ -22,14 +22,24 @@ public class BoardListServlet extends HttpServlet {
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		List<Board> resultList = new BoardService().selectBoardList();
+		String boardTitle = request.getParameter("board_title");
+		 String nowPage = request.getParameter("nowPage"); // nowPage 받아오기
+		
+  		Board option = new Board();
+		if(nowPage != null) {
+			option.setNowPage(Integer.parseInt(nowPage));
+		}
+		option.setBoardTitle(boardTitle);
+		
+		int totalData = new BoardService().selectBoardCount(option);
+		option.setTotalData(totalData); //이코드가 동작하면서 Paging클래스의 calcpaging함수가 동작함
+		
+		List<Board> resultList = new BoardService().selectBoardList(option);
 		
 		RequestDispatcher view = request.getRequestDispatcher("/views/board/list.jsp");
 		request.setAttribute("resultList", resultList);
+		request.setAttribute("paging", option); //list쪽으로 보내기
 		view.forward(request, response);
-		
-		System.out.println(resultList);
-	
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
