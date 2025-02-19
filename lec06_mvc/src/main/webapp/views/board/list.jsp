@@ -62,7 +62,7 @@
 			</div>
 		</div>
 	</section>	
-	<% 
+<%-- 	<% 
 	if(paging != null) {%>
 	<div class="center">
 		<div class="pagination">
@@ -74,11 +74,27 @@
 			<%} %>
 			<%if(paging.isNext()){ %>
 				<a href="/boardList?nowPage=<%=(paging.getPageBarEnd()+1)%>&board_title=<%=paging.getBoardTitle() == null ? "" : paging.getBoardTitle()%>">&raquo;</a>  <!-- 부호>>(오른쪽 꺽쇠 2개)를 나타냄 -->
-			<%} %>
-	
-		</div>
-	</div>
-	<%} %>
+			<%} %> --%>
+			
+			<c:choose>
+				<c:when test="${not empty paging}">
+				<div class="center">
+					<div class="pagination">
+						<c:if test="${paging.prev}">
+							<a href="/boardList?nowPage=${paging.pageBarStart-1}&board_title=${empty paging.boardTitle ? '' : paging.boardTitle}">&laquo;</a>											
+						</c:if>
+						<c:forEach var="i" begin="${paging.pageBarStart}" end="${paging.pageBarEnd}">
+							<a href="/boardList?nowPage=${i}&board_title=${empty paging.boardTitle ? '' : paging.boardTitle}">${i}</a>
+						</c:forEach>
+						<c:if test="${paging.next}">
+							<a href="/boardList?nowPage=${paging.pageBarEnd+1}&board_title=${empty paging.boardTitle ? '' : paging.boardTitle}">&raquo;</a>
+						</c:if>
+					</div>
+				</div>
+				</c:when>
+			</c:choose>
+
+<%-- 	<%} %> --%>
 	<script>
 		$('.board_list tbody tr').on('click',function(){
 			const boardNo = $(this).data('board-no');
