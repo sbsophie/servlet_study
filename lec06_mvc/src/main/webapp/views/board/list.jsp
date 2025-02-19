@@ -46,15 +46,17 @@
 						<%@ page import="com.gn.board.vo.Board, java.util.*, java.time.format.*" %>
 						<%
 							List<Board> list = (List<Board>)request.getAttribute("resultList");
-							DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yy-MM-dd HH:mm");
-							for(int i = 0; i < list.size(); i++){ %>
-								<tr data-board-no = "<%=list.get(i).getBoardNo()%>">
-									<td><%=((paging.getNowPage()-1)*paging.getNumPerPage())+(i+1) %></td>
-									<td><%=list.get(i).getBoardTitle() %></td>
-									<td><%=list.get(i).getMemberName() %></td>
-									<td><%=list.get(i).getRegDate().format(dtf) %></td>
+							DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yy-MM-dd HH:mm"); %>
+							
+							<c:forEach var="board" items="${resultList}" varStatus="vs">
+								<tr data-board-no = "${board.boardNo }">
+									<td>${((paging.nowPage-1)*paging.numPerPage)+vs.index+1 }</td>
+									<td>${board.boardTitle }</td>
+									<td>${board.memberName }</td>
+									<td>${board.regDate }</td>
 								</tr>
-							<% } %>
+							</c:forEach>	
+
 					</tbody>
 				</table>
 			</div>
