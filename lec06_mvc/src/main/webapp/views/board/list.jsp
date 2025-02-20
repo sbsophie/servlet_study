@@ -1,5 +1,7 @@
 	<%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html> 
 <head>
@@ -7,7 +9,8 @@
 <title>게시판</title>
 <link href='<%=request.getContextPath()%>/resources/css/board/list.css' rel="stylesheet" type="text/css">
 <link href='<%=request.getContextPath()%>/resources/css/include/paging.css' rel="stylesheet" type="text/css">
-<script src="<%=request.getContextPath()%>/resources/js/jquery-3.7.1.js"></script>
+<%-- <script src="<%=request.getContextPath()%>/resources/js/jquery-3.7.1.js"></script> --%>
+<script src="<c:url value='/resources/js/jquery-3.7.1.js'/>"></script>
 </head>
 <body>
 	<%@ include file="/views/include/header.jsp" %>
@@ -43,20 +46,31 @@
 						</tr>
 					</thead>
 					<tbody>
-						<%@ page import="com.gn.board.vo.Board, java.util.*, java.time.format.*" %>
-						<%
+<%-- 						<%
 							List<Board> list = (List<Board>)request.getAttribute("resultList");
-							DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yy-MM-dd HH:mm"); %>
-							
-							<c:forEach var="board" items="${resultList}" varStatus="vs">
-								<tr data-board-no = "${board.boardNo }">
-									<td>${((paging.nowPage-1)*paging.numPerPage)+vs.index+1 }</td>
-									<td>${board.boardTitle }</td>
-									<td>${board.memberName }</td>
-									<td>${board.regDate }</td>
+							DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yy-MM-dd HH:mm"); %> --%>
+						<%@ page import="com.gn.board.vo.Board, java.util.*, java.time.format.*" %>
+						<c:choose>
+							<c:when test="${not empty resultList }">
+								<c:forEach var="board" items="${resultList}" varStatus="vs">
+									<tr data-board-no = "${board.boardNo }">
+										<td>${((paging.nowPage-1)*paging.numPerPage)+vs.index+1 }</td>
+										<td>${board.boardTitle }</td>
+										<td>${board.memberName }</td>
+										<%-- <td>${board.regDate }</td> --%>
+										<fmt:parseDate value="${board.regDate }" pattern="yyyy-MM-dd'T'HH:mm:ss" var="strRegDate"/>
+										<td>
+											<fmt:formatDate value="${strRegDate }" pattern="yyyy-MM-dd HH:mm"/>
+										</td>
+									</tr>
+								</c:forEach>	
+							</c:when>
+							<c:otherwise>
+								<tr>
+									<td colspan="4">조회된 데이터가 없습니다.</td>
 								</tr>
-							</c:forEach>	
-
+							</c:otherwise>
+						</c:choose>
 					</tbody>
 				</table>
 			</div>
@@ -75,13 +89,17 @@
 			<%if(paging.isNext()){ %>
 				<a href="/boardList?nowPage=<%=(paging.getPageBarEnd()+1)%>&board_title=<%=paging.getBoardTitle() == null ? "" : paging.getBoardTitle()%>">&raquo;</a>  <!-- 부호>>(오른쪽 꺽쇠 2개)를 나타냄 -->
 			<%} %> --%>
-			
+<%-- 	<%} %> --%>
 			<c:choose>
 				<c:when test="${not empty paging}">
 				<div class="center">
 					<div class="pagination">
 						<c:if test="${paging.prev}">
-							<a href="/boardList?nowPage=${paging.pageBarStart-1}&board_title=${empty paging.boardTitle ? '' : paging.boardTitle}">&laquo;</a>											
+							<c:url var="testUrl" value="/boardList">
+								<c:param name="nowPage" value="${paging.pageBarStart-1 }"/>
+								<c:param name="board_title" value="${paging.boardTitle }"/>
+							</c:url>
+							<a href="${testUrl }">&laquo;</a>											
 						</c:if>
 						<c:forEach var="i" begin="${paging.pageBarStart}" end="${paging.pageBarEnd}">
 							<a href="/boardList?nowPage=${i}&board_title=${empty paging.boardTitle ? '' : paging.boardTitle}">${i}</a>
@@ -93,8 +111,6 @@
 				</div>
 				</c:when>
 			</c:choose>
-
-<%-- 	<%} %> --%>
 	<script>
 		$('.board_list tbody tr').on('click',function(){
 			const boardNo = $(this).data('board-no');

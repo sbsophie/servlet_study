@@ -3,6 +3,7 @@
 <%@ page import="com.gn.member.vo.Member" %>
 <% Member m = (Member)session.getAttribute("member"); %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <link href="<%=request.getContextPath() %>/resources/css/include/nav.css" rel="stylesheet" type="text/css">
     
 <nav>
@@ -12,7 +13,6 @@
 				<li>
 					<a href="/boardList">게시판</a>
 				</li>
-				
 				<c:choose>
 					<c:when test="${empty member}">
 						<li>
