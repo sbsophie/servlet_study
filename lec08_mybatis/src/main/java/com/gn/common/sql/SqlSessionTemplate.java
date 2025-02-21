@@ -24,9 +24,10 @@ public class SqlSessionTemplate {
 			SqlSessionFactory factory = sfb.build(is);
 			
 			// 4. SqlSession 객체 생성
-			// 매개변수 -> AutoCommit여부를 지정하는데 안쓰면 true
-			// AutoCommit을 끄고 싶으면 매개변수에 false를 써주면됨
-			session = factory.openSession();
+			// 1. 매개변수를 안쓰면 AutoCommit을 안한다는 거임
+			// true를 넣으면  AutoCommit :o
+			// false를 넣으면 AutoCommit :x
+			session = factory.openSession(true);
 			
 		} catch (IOException e) {
 			e.printStackTrace();
